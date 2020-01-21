@@ -21,29 +21,46 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { 
+    urls: urlDatabase,
+    username: req.cookies['username']
+  };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+    username: req.cookies['username'],
+    urls: urlDatabase,
+  }
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { 
     shortURL: req.params.shortURL, 
-    longURL:  urlDatabase[req.params.shortURL]};
+    longURL:  urlDatabase[req.params.shortURL],
+    username: req.cookies['username']
+  };
   res.render("urls_show", templateVars);
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
+  let templateVars = {
+    username: req.cookies['username'],
+    urls: urlDatabase,
+  }
   delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls/")
+  res.render("urls_index", templateVars)
 });
 
 app.post("/urls/:shortURL/edit", (req, res) => {
+  let templateVars = {
+    username: req.cookies['username'],
+    urls: urlDatabase,
+  }
   urlDatabase[req.params.shortURL] = req.body['longURL']
-  res.redirect("/urls/")
+  res.render("urls_index", templateVars)
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -55,6 +72,7 @@ app.post("/urls", (req, res) => {
   let urlVars = {
     shortURL: String(generateRandomString()),
     longURL: req.body.longURL,
+    username: req.cookies['username'] 
   }
   res.render("urls_show", urlVars)
   res.send(urlDatabase[urlVars['shortURL']] = urlVars['longURL']);   
@@ -62,8 +80,23 @@ app.post("/urls", (req, res) => {
 
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
+  let templateVars = {
+    urls: urlDatabase,
+    // username: req.cookies['username']
+  }
   res.redirect("/urls/");
   // console.log(req.body);
+})
+
+app.post("/logout", (req, res) => {
+  // res.cookie('username', req.body.username);
+  res.clearCookie('username')
+  let templateVars = {
+    urls: urlDatabase,
+  }
+  res.redirect("/urls/");
+  // console.log(req.body);
+
 })
 
 app.listen(PORT, () => {
