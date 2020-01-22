@@ -44,6 +44,7 @@ app.get("/authentication/:auth", (req, res) => {
     urls: urlDatabase,
     auth: req.params.auth,
   };
+  console.log(users);
   res.render("urls_authentication", templateVars);
 });
 
@@ -103,27 +104,49 @@ app.post("/authentication/:auth", (req, res) => {
   
   if (!req.body.email || !req.body.password) {
     res.statusCode = 404;
-    // res.send('Error 404');
   }
     
   if (auth === 'register') {
-    userId = generateRandomString();
-    users[userId] = {
-      id: userId,
-      email: req.body.email,
-      password: req.body.password
-    };
-    // res.cookie('user_id', users[userId].id);
-    res.statusCode = 200;
-  } else if (auth === 'login') {
-    for (const ids in users) {
-      userId = ids;
-      if (!userId || users[userId]['email'] !== req.body.email || users[userId]['password'] !== req.body.password) {
-        res.statusCode = 403;
-      } else {
-        res.statusCode = 200;
-        break;
+    if (Object.keys(users).length > 0) {
+      for (const ids in users) {
+        userId = ids;
+        if (users[userId]['email'] === req.body.email) {
+          res.statusCode = 403;
+          console.log('same emails');
+          break;
+        } else {
+          userId = generateRandomString();
+          users[userId] = {
+            id: userId,
+            email: req.body.email,
+            password: req.body.password
+          };
+          res.statusCode = 200;
+        }
       }
+    } else {
+      userId = generateRandomString();
+      users[userId] = {
+        id: userId,
+        email: req.body.email,
+        password: req.body.password
+      };
+      res.statusCode = 200;
+    }
+
+  } else if (auth === 'login') {
+    if (Object.keys(users).length > 0) {
+      for (const ids in users) {
+        userId = ids;
+        if (!userId || users[userId]['email'] !== req.body.email || users[userId]['password'] !== req.body.password) {
+          res.statusCode = 403;
+        } else {
+          res.statusCode = 200;
+          break;
+        }
+      }
+    } else {
+      res.statusCode = 403;
     }
   }
 
