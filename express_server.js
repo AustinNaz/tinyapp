@@ -11,6 +11,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
+function users(id, email, password) {
+    this.id = id,
+    this.email = email,
+    this.password = password
+}
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -35,6 +41,11 @@ app.get("/urls/new", (req, res) => {
   }
   res.render("urls_new", templateVars);
 });
+
+app.get("/urls/register", (req, res) => {
+  console.log('register');
+  res.render("urls_authentication", templateVars);
+})
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = { 
@@ -86,18 +97,27 @@ app.post("/login", (req, res) => {
   }
   res.redirect("/urls/");
   // console.log(req.body);
+});
+
+app.post("/register", (req, res) => {
+  currentUser = new users(generateRandomString(), req.body.email, req.body.password);
+
+  console.log(currentUser);
+  // res.redirect("/urls/");
+  // console.log(req.body);
 })
 
 app.post("/logout", (req, res) => {
   // res.cookie('username', req.body.username);
   res.clearCookie('username')
-  let templateVars = {
-    urls: urlDatabase,
-  }
-  res.redirect("/urls/");
+  // let templateVars = {
+  //   urls: urlDatabase,
+  // }
+  // res.redirect("/urls/");
+  res.render("urls_authentication")
   // console.log(req.body);
 
-})
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
