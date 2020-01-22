@@ -11,7 +11,6 @@
   </head>
 
   <body>
-
     <%- include ('partials/_header') %>
 
     <main style="margin: 1em;">
@@ -23,7 +22,11 @@
           <button type="submit" class="btn btn-primary">Submit</button>
         </div>
       </form> -->
-      <%- include ('partials/_register') %>
+      <% if(auth === 'register'){ %>
+        <%- include ('partials/_register') %>
+      <% } else{ %>
+          <%- include ('partials/_login') %>
+      <% } %>
 
     </main>
       <!-- Bootstrap JS -->
