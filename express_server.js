@@ -150,7 +150,7 @@ app.post("/authentication/:auth", (req, res) => {
           users[userId] = {
             id: userId,
             email: req.body.email,
-            password: req.body.password
+            password: bcrypt.hashSync(req.body.password, 10)
           };
           res.statusCode = 200;
         }
@@ -160,7 +160,7 @@ app.post("/authentication/:auth", (req, res) => {
       users[userId] = {
         id: userId,
         email: req.body.email,
-        password: req.body.password
+        password: bcrypt.hashSync(req.body.password, 10)
       };
       res.statusCode = 200;
     }
@@ -169,7 +169,7 @@ app.post("/authentication/:auth", (req, res) => {
     if (Object.keys(users).length > 0) {
       for (const ids in users) {
         userId = ids;
-        if (!userId || users[userId]['email'] !== req.body.email || users[userId]['password'] !== req.body.password) {
+        if (!userId || users[userId]['email'] !== req.body.email || !bcrypt.compareSync(req.body.password, users[userId]['password'])) {
           res.statusCode = 403;
         } else {
           res.statusCode = 200;
