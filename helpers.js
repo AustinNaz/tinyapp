@@ -15,6 +15,7 @@ const urlsForUser = function(userId, urlObjects) {
   return results;
 };
 
+// Adds an http:// to a url inputted without one, doesnt affect https://, Is a bug with multiple http://
 const httpUrl = function(longUrl) {
   let formattedUrl = longUrl;
   if (!longUrl.includes('http://') || !longUrl.includes('https://')) {
@@ -39,10 +40,9 @@ const temVars = function(userId, userDb, urlDb, errorCode, extraObj) {
   const templateVars = {
     user: userDb[userId],
     urls: urlsForUser(userId, urlDb),
-    errorFunc: function(errorCode) {
+    errorFunc: function(errorCode) {    // Would like to seperate out this functionality but not sure how to pull the function into its own function and call it in the object
       if (errorCode !== 200) {
         if (errorCode === 400) {
-          console.log('here')
           return templateVars['error'] = {
             errorKey: 'Welcome',
             errorMsg: "Welcome to TinyApp, a website that lets you shorten your urls for easier access, which you can also share with other people. Please login or Register."
@@ -67,12 +67,12 @@ const temVars = function(userId, userDb, urlDb, errorCode, extraObj) {
             errorKey: "Error " + errorCode,
             errorMsg: "Whoops, Looks like the server went on a lunch break, please try again later."
           };
-        } 
+        }
       }
     }
   };
 
-  for (const key in extraObj) {
+  for (const key in extraObj) {   // Add any extra objects to pass along
     templateVars[key] = extraObj[key];
   }
   return templateVars;

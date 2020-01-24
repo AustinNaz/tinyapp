@@ -65,23 +65,18 @@ app.get("/authentication/:auth", (req, res) => {
 
 // Shows the information about the tinyURL, could alter templateVars and remove urls, but seems like its not worth it.
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars;
+  const templateVars = temVars(req.session.user_id, users, urlDatabase, res.statusCode);
   if (req.session.user_id) {
     if (Object.keys(urlDatabase).includes(req.params.shortURL)) {
-      const urls = {
-        shortURL: req.params.shortURL,
-        longURL: urlDatabase[req.params.shortURL]['longURL'],
-      };
-      templateVars = temVars(req.session.user_id, users, urlDatabase, res.statusCode, urls);
+      templateVars['shortURL'] = req.params.shortURL;
+      templateVars['longURL'] = urlDatabase[req.params.shortURL]['longURL'],
       temError(res, templateVars, 200);
       return res.render("urls_show", templateVars);
     } else {
-      templateVars = temVars(req.session.user_id, users, urlDatabase, res.statusCode);
       temError(res, templateVars, 403);
       return res.render("urls_error", templateVars);
     }
   }
-  templateVars = temVars(req.session.user_id, users, urlDatabase, res.statusCode);
   temError(res, templateVars, 404);
   return res.render("urls_error", templateVars);
 });
