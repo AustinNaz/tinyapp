@@ -16,10 +16,12 @@
           <button type="submit" class="btn btn-primary" formaction="/authentication/register">Register</button>
       </form>
     <% } else{ %>  
-      <h5>Logged in as: <%= user.email %></h5>
+      <div class="navbar-nav"></div>
+      <a class="nav-item nav-link">Logged in as: <%= user.email %></a>
       <form class="ml-2" action="/logout" method="POST">
         <button type="submit" class="btn btn-outline-dark">LogOut</button>
-    </form>
+      </form>
+      </div>
    <% } %>
   </nav>
 </header>
