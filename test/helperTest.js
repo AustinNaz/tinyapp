@@ -1,6 +1,6 @@
 const { assert } = require('chai');
 
-const { getUserByEmail, urlsForUser } = require('../helpers.js');
+const { getUserByEmail, urlsForUser, httpUrl } = require('../helpers.js');
 
 const testUsers = {
   "userRandomID": {
@@ -56,5 +56,23 @@ describe('urlsForUser', function() {
 
     // Write your assert statement here
     assert.deepEqual(userUrls, expectedOutput);
+  });
+});
+
+describe('httpUrl', function() {
+  it('Add http:// to the front of a url that doesnt have it', function() {
+    const url = 'www.test.com';
+    const expectedOutput = 'http://www.test.com';
+
+    // Write your assert statement here
+    assert.strictEqual(httpUrl(url), expectedOutput);
+  });
+
+  it("Shouldnt add http:// to the front of a url that has it", function() {
+    const url = "https://www.test.com"
+    const expectedOutput = "https://www.test.com"
+
+    // Write your assert statement here
+    assert.strictEqual(url, expectedOutput);
   });
 });

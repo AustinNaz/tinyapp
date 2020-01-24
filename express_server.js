@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 const bodyParser = require("body-parser");
-const { generateRandomString, urlsForUser, temVars, temError} = require('./helpers');
+const { generateRandomString, urlsForUser, temVars, temError, httpUrl} = require('./helpers');
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -39,7 +39,6 @@ app.get("/urls", (req, res) => {
     return res.render("urls_index", templateVars);
   } else {
     temError(res, templateVars, 400);
-    console.log(templateVars);
     return res.render("urls_error", templateVars);
   }
 });
@@ -93,7 +92,7 @@ app.post("/urls", (req, res) => {
 
   if (req.session.user_id) {
     const shortUrl = generateRandomString();
-    const longUrl = req.body.longURL;
+    const longUrl = httpUrl(req.body.longURL);
     const urls = {
       shortURL: shortUrl,
       longURL: longUrl,
@@ -143,7 +142,7 @@ app.post("/urls/:shortURL/edit", (req, res) => {
     for (const shortUrl in userUrls) {
       if (shortUrl === req.params.shortURL) {
         urlDatabase[req.params.shortURL] = {
-          longURL: req.body['longURL'],
+          longURL: httpUrl(req.body['longURL']),
           userID: userID};
         return res.redirect("/urls/");
       }

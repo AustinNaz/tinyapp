@@ -15,6 +15,14 @@ const urlsForUser = function(userId, urlObjects) {
   return results;
 };
 
+const httpUrl = function(longUrl) {
+  let formattedUrl = longUrl;
+  if (!longUrl.includes('http://') || !longUrl.includes('https://')) {
+    return formattedUrl = 'http://' + longUrl;
+  }
+  return formattedUrl;
+};
+
 // Not acually using this function in my code, only made it because compass said we needed to test it
 // const getUserByEmail = function(email, userObjects) {
 //   for (const user in userObjects) {
@@ -34,7 +42,7 @@ const temVars = function(userId, userDb, urlDb, errorCode, extraObj) {
     errorFunc: function(errorCode) {
       if (errorCode !== 200) {
         if (errorCode === 400) {
-          console.log('here');
+          console.log('here')
           return templateVars['error'] = {
             errorKey: 'Welcome',
             errorMsg: "Welcome to TinyApp, a website that lets you shorten your urls for easier access, which you can also share with other people. Please login or Register."
@@ -59,7 +67,7 @@ const temVars = function(userId, userDb, urlDb, errorCode, extraObj) {
             errorKey: "Error " + errorCode,
             errorMsg: "Whoops, Looks like the server went on a lunch break, please try again later."
           };
-        }
+        } 
       }
     }
   };
@@ -76,4 +84,4 @@ const temError = function(res, templateVars, errorCode) {
   templateVars.errorFunc(errorCode);
 };
 
-module.exports = { generateRandomString, urlsForUser, temVars, temError};
+module.exports = { generateRandomString, urlsForUser, temVars, temError, httpUrl};
