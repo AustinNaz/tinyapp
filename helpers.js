@@ -15,10 +15,10 @@ const urlsForUser = function(userId, urlObjects) {
   return results;
 };
 
-// Adds an http:// to a url inputted without one, doesnt affect https://, Is a bug with multiple http://
+// Adds an http:// to a url inputted without one, doesnt affect https://
 const httpUrl = function(longUrl) {
   let formattedUrl = longUrl;
-  if (!longUrl.includes('http://') || !longUrl.includes('https://')) {
+  if (!longUrl.includes('http://') && !longUrl.includes('https://')) {
     return formattedUrl = 'http://' + longUrl;
   }
   return formattedUrl;
